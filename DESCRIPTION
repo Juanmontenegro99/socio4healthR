@@ -1,0 +1,31 @@
+Package: socio4healthR
+Title: R Wrapper for socio4health Python Library
+Version: 0.0.1
+Authors@R: c(
+    person("Diego", "Irreño", , "d.irrenotorres@uniandes.edu.co", role = "aut"),
+    person("Erick", "Lozano", , "es.lozano@uniandes.edu.co", role = "aut"),
+    person("Juan", "Montenegro-Torres", , "jf.montenegro@uniandes.edu.co", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-2755-4743")),
+    person("Ingrid", "Mora", , "i.moras@uniandes.edu.co", role = "ctb")
+    )
+Description: Package socio4health is an extraction, transformation and loading
+    (ETL) classification tool designed to simplify the intricate process of
+    collecting and merging data from multiple sources, focusing on
+    sociodemographic and census datasets from Colombia, Brazil, and Peru,
+    into a harmonized dataset. This package provides R wrappers for the Python
+    socio4health library, enabling seamless integration in R workflows.
+License: MIT + file LICENSE
+URL: https://github.com/harmonize-tools/socio4health
+BugReports: https://github.com/harmonize-tools/socio4health/issues
+Depends: R (>= 4.1.0)
+Imports:
+    reticulate
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+LazyData: true
+VignetteBuilder: knitr

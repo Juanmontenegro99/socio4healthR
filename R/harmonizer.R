@@ -7,8 +7,8 @@
 #' All parameters are passed directly to the constructor.
 #'
 #' @param min_common_columns Minimum number of common columns for vertical merge.
-#' @param similarity_threshold Column similarity threshold (0–1).
-#' @param nan_threshold NaN threshold for removing columns (0–1).
+#' @param similarity_threshold Column similarity threshold between 0 and 1.
+#' @param nan_threshold NaN threshold for removing columns between 0 and 1.
 #' @param sample_frac Sampling fraction for NaN.
 #' @param column_mapping Enum, dict, JSON, or path to JSON.
 #' @param value_mappings Enum, dict, JSON, or path to JSON.
@@ -159,8 +159,18 @@ s4h_harmonize_dataframes <- function(harmonizer,
                                      return_as = c("dask", "pandas", "data.frame")) {
   return_as <- match.arg(return_as)
 
+  # reticulate::py_is_instance is not available in all versions.
+  py_is_instance_fun <- get0("py_is_instance", envir = asNamespace("reticulate"), mode = "function")
+  is_py_dict <- FALSE
+  if (!is.null(py_is_instance_fun)) {
+    is_py_dict <- isTRUE(tryCatch(py_is_instance_fun(country_dfs, "dict"), error = function(e) FALSE))
+  } else {
+    cls <- class(country_dfs)
+    is_py_dict <- any(grepl("^python\\.builtin\\.dict$", cls))
+  }
+
   # If it comes as an R structure, convert it to Python directly:
-  if (!reticulate::py_is_instance(country_dfs, "dict")) {
+  if (!is_py_dict) {
     country_dfs <- reticulate::r_to_py(country_dfs)
   }
 

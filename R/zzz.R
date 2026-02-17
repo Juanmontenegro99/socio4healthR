@@ -12,10 +12,10 @@
       message = "Python is not available in your system."
     ))
   }
-  
+
   # Check if socio4health is installed
   socio4health_available <- reticulate::py_module_available("socio4health")
-  
+
   return(list(
     python_available = TRUE,
     socio4health_available = socio4health_available,
@@ -85,13 +85,13 @@
 #'
 #' @export
 s4h_setup <- function(method = "auto", envname = "socio4health", python_version = NULL) {
-  
+
   # Check if socio4health is already installed
   if (reticulate::py_module_available("socio4health")) {
-    message("✓ socio4health is already installed and available!")
+    message("socio4health is already installed and available!")
     return(invisible(TRUE))
   }
-  
+
   # Check if Python is available
   if (!reticulate::py_available()) {
     stop(
@@ -100,26 +100,26 @@ s4h_setup <- function(method = "auto", envname = "socio4health", python_version 
       "After installation, restart R and try again."
     )
   }
-  
+
   message("Setting up Python environment for socio4health...")
   message("Python executable: ", reticulate::py_exe())
   message("Python version: ", reticulate::py_version())
-  
+
   # Determine the installation method
   if (method == "auto") {
     # Try conda first if available, otherwise virtualenv
     if (nzchar(Sys.which("conda"))) {
       method <- "conda"
-      message("✓ Detected conda installation, using conda method")
+      message("Detected conda installation, using conda method")
     } else if (nzchar(Sys.which("python"))) {
       method <- "virtualenv"
-      message("✓ Detected Python installation, using virtualenv method")
+      message("Detected Python installation, using virtualenv method")
     } else {
       method <- "pip"
       message("Using pip installation to current Python environment")
     }
   }
-  
+
   # Install based on method
   if (method == "conda") {
     message("\nCreating conda environment '", envname, "'...")
@@ -129,15 +129,15 @@ s4h_setup <- function(method = "auto", envname = "socio4health", python_version 
       } else {
         reticulate::conda_create(envname)
       }
-      message("✓ Conda environment created")
-      
+      message("Conda environment created")
+
       message("\nInstalling socio4health package...")
       reticulate::conda_install(envname, "socio4health")
-      message("✓ socio4health installed")
-      
+      message("socio4health installed")
+
       message("\nConfiguring R to use the new environment...")
       reticulate::use_condaenv(envname, required = TRUE)
-      message("✓ Environment configured")
+      message("Environment configured")
     }, error = function(e) {
       stop(
         "Error during conda setup:\n",
@@ -145,20 +145,20 @@ s4h_setup <- function(method = "auto", envname = "socio4health", python_version 
         "\n\nPlease ensure conda is properly installed and try again."
       )
     })
-    
+
   } else if (method == "virtualenv") {
     message("\nCreating virtual environment '", envname, "'...")
     tryCatch({
       reticulate::virtualenv_create(envname)
-      message("✓ Virtual environment created")
-      
+      message("Virtual environment created")
+
       message("\nInstalling socio4health package...")
       reticulate::virtualenv_install(envname, "socio4health")
-      message("✓ socio4health installed")
-      
+      message("socio4health installed")
+
       message("\nConfiguring R to use the new environment...")
       reticulate::use_virtualenv(envname, required = TRUE)
-      message("✓ Environment configured")
+      message("Environment configured")
     }, error = function(e) {
       stop(
         "Error during virtualenv setup:\n",
@@ -166,12 +166,12 @@ s4h_setup <- function(method = "auto", envname = "socio4health", python_version 
         "\n\nPlease ensure Python is properly installed and try again."
       )
     })
-    
+
   } else if (method == "pip") {
     message("\nInstalling socio4health to current Python environment...")
     tryCatch({
       reticulate::py_install("socio4health", pip = TRUE)
-      message("✓ socio4health installed")
+      message("socio4health installed")
     }, error = function(e) {
       stop(
         "Error during pip install:\n",
@@ -182,10 +182,10 @@ s4h_setup <- function(method = "auto", envname = "socio4health", python_version 
   } else {
     stop("Unknown installation method: ", method, ". Use 'auto', 'virtualenv', 'conda', or 'pip'.")
   }
-  
-  message("\n✓ Setup complete! You can now use socio4healthR.")
+
+  message("\nSetup complete! You can now use socio4healthR.")
   message("Restarting R is recommended to ensure the environment is properly loaded.")
-  
+
   invisible(TRUE)
 }
 
@@ -203,26 +203,26 @@ s4h_setup <- function(method = "auto", envname = "socio4health", python_version 
 #' @export
 s4h_check_env <- function() {
   check_result <- .s4h_check_python()
-  
+
   cat("Python Environment Status:\n")
   cat(paste(rep("-", nchar("Python Environment Status:")), collapse = ""), "\n")
-  
+
   if (check_result$python_available) {
-    cat("✓ Python is available\n")
+    cat("Python is available\n")
     cat("  Python version: ", check_result$python_version, "\n", sep = "")
     cat("  Python executable: ", check_result$python_executable, "\n", sep = "")
-    
+
     if (check_result$socio4health_available) {
-      cat("✓ socio4health is installed and ready to use\n")
+      cat("socio4health is installed and ready to use\n")
     } else {
-      cat("✗ socio4health is NOT installed\n")
+      cat("socio4health is NOT installed\n")
       cat("  Run: socio4healthR::s4h_setup()\n")
     }
   } else {
-    cat("✗ Python is NOT available on your system\n")
+    cat("Python is NOT available on your system\n")
     cat("  Please install Python from https://www.python.org/\n")
   }
-  
+
   invisible(check_result)
 }
 
@@ -236,7 +236,7 @@ s4h_check_env <- function() {
       warning("Could not load specified conda environment: ", Sys.getenv("SOCIO4HEALTH_CONDAENV"))
     })
   }
-  
+
   if (Sys.getenv("SOCIO4HEALTH_VIRTUALENV") != "") {
     tryCatch({
       reticulate::use_virtualenv(Sys.getenv("SOCIO4HEALTH_VIRTUALENV"), required = FALSE)
@@ -244,7 +244,7 @@ s4h_check_env <- function() {
       warning("Could not load specified virtual environment: ", Sys.getenv("SOCIO4HEALTH_VIRTUALENV"))
     })
   }
-  
+
   if (Sys.getenv("RETICULATE_PYTHON") != "") {
     tryCatch({
       reticulate::use_python(Sys.getenv("RETICULATE_PYTHON"), required = FALSE)
@@ -252,7 +252,7 @@ s4h_check_env <- function() {
       warning("Could not use specified Python executable: ", Sys.getenv("RETICULATE_PYTHON"))
     })
   }
-  
+
   # Try to load module silently
   .s4h_python_checked <<- TRUE
   tryCatch({
